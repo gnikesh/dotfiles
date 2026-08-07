@@ -20,8 +20,10 @@ in
     nerd-fonts.hack
   ];
   fonts.fontconfig.enable = true;
-  home.sessionVariables.EDITOR = "nvim";
-
+  home.sessionVariables = {
+    EDITOR = "nvim";
+    EZA_COLORS = "di=34:fi=37:ex=32:ln=36";
+  };
   programs.zsh = {
     enable = true;
     autosuggestion.enable = true;      # ghost text from history
@@ -37,6 +39,12 @@ in
       m = "git switch main";
       cc = "claude --dangerously-skip-permissions";
       co = "codex --full-auto";
+      # For coloring the files and directories
+      ls = "eza --color=always --icons";
+      ll = "eza -lah --color=always --icons";
+    };
+    sessionVariables = {
+      EZA_COLORS = "di=34:fi=37:ex=32:ln=36";
     };
   };
 
