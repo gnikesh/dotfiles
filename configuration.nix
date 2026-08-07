@@ -36,7 +36,7 @@
       "eza"
     ];
     casks = [
-      "wezterm"
+      "iterm2"
       "claude-code"
     ];
   };
