@@ -12,12 +12,17 @@
     home-manager.inputs.nixpkgs.follows = "nixpkgs";
 
     nix-homebrew.url = "github:zhaofengli/nix-homebrew";
+
+    # Oh My Bash is not packaged by the pinned Nixpkgs release, so keep its
+    # source pinned as a flake input and let Home Manager source it directly.
+    oh-my-bash.url = "github:ohmybash/oh-my-bash";
+    oh-my-bash.flake = false;
   };
 
-  outputs = inputs@{ self, nix-darwin, nix-homebrew, home-manager, nixpkgs }:
+  outputs = inputs@{ self, nix-darwin, nix-homebrew, home-manager, nixpkgs, oh-my-bash }:
     let
       # The one username line to change if this isn't your machine.
-      # bootstrap.sh offers to rewrite this for you if your macOS username differs.
+      # Change this if the machine uses a different username.
       user = "gnikesh";
     in
     {
@@ -34,6 +39,30 @@
             home-manager.users.${user} = import ./home.nix;
           }
         ];
+      };
+
+      homeConfigurations.linux-x86_64 = home-manager.lib.homeManagerConfiguration {
+        pkgs = import nixpkgs {
+          system = "x86_64-linux";
+          config.allowUnfree = true;
+        };
+        extraSpecialArgs = {
+          inherit user;
+          ohMyBash = oh-my-bash;
+        };
+        modules = [ ./home.nix ];
+      };
+
+      homeConfigurations.linux-aarch64 = home-manager.lib.homeManagerConfiguration {
+        pkgs = import nixpkgs {
+          system = "aarch64-linux";
+          config.allowUnfree = true;
+        };
+        extraSpecialArgs = {
+          inherit user;
+          ohMyBash = oh-my-bash;
+        };
+        modules = [ ./home.nix ];
       };
     };
 }

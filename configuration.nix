@@ -33,7 +33,6 @@
     onActivation.extraFlags = [ "--force" ];
     brews = [
       "herdr"
-      "eza"
     ];
     casks = [
       "iterm2"
