@@ -8,9 +8,13 @@ case "$(uname -s):$(uname -m)" in
     exec sudo darwin-rebuild switch --flake "$DIR#mac"
     ;;
   Linux:x86_64|Linux:amd64)
+    export NIX_CONFIG="${NIX_CONFIG-}
+experimental-features = nix-command flakes"
     TARGET="linux-x86_64"
     ;;
   Linux:aarch64|Linux:arm64)
+    export NIX_CONFIG="${NIX_CONFIG-}
+experimental-features = nix-command flakes"
     TARGET="linux-aarch64"
     ;;
   *)
@@ -25,4 +29,4 @@ fi
 
 # Bootstrap standalone Home Manager on a server where its command is not yet
 # installed. The configuration itself remains pinned by this repository.
-exec nix run github:nix-community/home-manager/release-26.05 -- switch --flake "$DIR#$TARGET"
+exec nix --extra-experimental-features 'nix-command flakes' run github:nix-community/home-manager/release-26.05 -- switch --flake "$DIR#$TARGET"

@@ -152,7 +152,14 @@ nix --version
 nix flake --help
 ```
 
-If flakes are not enabled, add `nix-command` and `flakes` to the Nix configuration, then start a new shell.
+If flakes are not enabled, persist the setting for your user:
+
+```bash
+mkdir -p ~/.config/nix
+printf '%s\n' 'experimental-features = nix-command flakes' >> ~/.config/nix/nix.conf
+```
+
+The Linux branch of `rebuild.sh` also enables these features for its own run, so the first `./rebuild.sh` can bootstrap a host that does not have this setting yet.
 
 ### 3. Clone the repository
 
