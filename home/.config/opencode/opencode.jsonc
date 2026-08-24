@@ -1,0 +1,239 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "instructions": ["clusters/nrp.md"],
+  "lsp": true,
+  "agents": {
+      "coordinator": {
+        "mode": "primary",
+        "model": "NRP/deepseek-v4-flash",
+        "sub_agents": ["researcher", "builder"],
+        "toolsets": [
+          { "type": "background_agents" }
+        ]
+      },
+      "code-reviewer": {
+        "description": "Reviews code for best practices and potential issues",
+        "mode": "subagent",
+        "model": "anthropic/claude-sonnet-4-20250514",
+        "prompt": "You are a code reviewer. Focus on security, performance, and maintainability.",
+        "permission": {
+          "edit": "deny"
+        }
+      }
+  },
+  "mcp": {
+    "git": {
+      "type": "local",
+      "command": "uvx",
+      "args": [
+        "mcp-server-git",
+        "--repository",
+        "/home/gnikesh/projects/video-gen-pilot/"
+      ],
+      "enabled": true
+    },
+    "brave-search": {
+      "type": "local",
+      "command": [
+        "npx",
+        "-y",
+        "@brave/brave-search-mcp-server"
+      ],
+      "environment": {
+        "BRAVE_API_KEY": "{env:BRAVE_API_KEY}"
+      },
+      "enabled": true
+    },
+    "context7": {
+      "type": "remote",
+      "url": "https://mcp.context7.com/mcp"
+    },
+    "zotero": {
+      "type": "local",
+      "command": ["/home/gnikesh/.local/bin/zotero-mcp"],
+      "environment": {
+        "ZOTERO_API_KEY": "{env:ZOTERO_API_KEY}",
+        "ZOTERO_LIBRARY_ID": "{env:ZOTERO_LIBRARY_ID}",
+        "ZOTERO_LIBRARY_TYPE": "user"
+      },
+      "enabled": false
+    },
+    "playwright": {
+      "type": "local",
+      "command": ["npx", "-y", "@playwright/mcp@latest"],
+      "enabled": true
+    },
+    "kubernetes": {
+      "type": "local",
+      "command": ["npx", "-y", "kubernetes-mcp-server@latest", "--kubeconfig", "/home/gnikesh/.kube/config"],
+      "enabled": false
+    },
+    "sequential-thinking": {
+      "type": "local",
+      "command": ["npx", "-y", "@modelcontextprotocol/server-sequential-thinking"],
+      "enabled": false
+    }
+  },
+  "provider": {
+    "NRP": {
+      "npm": "@ai-sdk/openai-compatible",
+      "name": "NRP",
+      "options": {
+        "baseURL": "https://ellm.nrp-nautilus.io/v1",
+        "apiKey": "{env:NAUTILUS_API_KEY}"
+      },
+      "models": {
+        "qwen3": {
+          "name": "qwen3",
+          "limit": {
+            "context": 1010000,
+            "output": 32768
+          },
+          "modalities": {
+            "input": ["text", "image", "video"],
+            "output": ["text"]
+          },
+          "options": {
+            "chat_template_kwargs": {
+              "thinking": true,
+              "preserve_thinking": true
+            }
+          },
+          "variants": {
+            "instruct": {
+              "chat_template_kwargs": {
+                "thinking": false,
+                "preserve_thinking": false
+              }
+            }
+          }
+        },
+        "gpt-oss": {
+          "name": "gpt-oss",
+          "limit": {
+            "context": 131072,
+            "output": 32768
+          },
+          "modalities": {
+            "input": ["text"],
+            "output": ["text"]
+          },
+          "options": {
+            "chat_template_kwargs": {
+              "thinking": true,
+              "preserve_thinking": true
+            }
+          },
+          "variants": {
+            "instruct": {
+              "chat_template_kwargs": {
+                "thinking": false,
+                "preserve_thinking": false
+              }
+            }
+          }
+        },
+        "gemma": {
+          "name": "gemma",
+          "limit": {
+            "context": 262144,
+            "output": 32768
+          },
+          "modalities": {
+            "input": ["text", "image", "video"],
+            "output": ["text"]
+          },
+          "options": {
+            "chat_template_kwargs": {
+              "thinking": true,
+              "preserve_thinking": true
+            }
+          },
+          "variants": {
+            "instruct": {
+              "chat_template_kwargs": {
+                "thinking": false,
+                "preserve_thinking": false
+              }
+            }
+          }
+        },
+        "kimi": {
+          "name": "kimi",
+          "limit": {
+            "context": 131072,
+            "output": 32768
+          },
+          "modalities": {
+            "input": ["text", "image", "video"],
+            "output": ["text"]
+          },
+          "options": {
+            "chat_template_kwargs": {
+              "thinking": true,
+              "preserve_thinking": true
+            }
+          },
+          "variants": {
+            "instruct": {
+              "chat_template_kwargs": {
+                "thinking": false,
+                "preserve_thinking": false
+              }
+            }
+          }
+        },
+        "glm-5": {
+          "name": "glm-5",
+          "limit": {
+            "context": 300000,
+            "output": 32768
+          },
+          "modalities": {
+            "input": ["text"],
+            "output": ["text"]
+          },
+          "options": {
+            "chat_template_kwargs": {
+              "thinking": true,
+              "preserve_thinking": true
+            }
+          },
+          "variants": {
+            "instruct": {
+              "chat_template_kwargs": {
+                "thinking": false,
+                "preserve_thinking": false
+              }
+            }
+          }
+        },
+        "deepseek-v4-flash": {
+          "name": "deepseek-v4-flash",
+          "limit": {
+            "context": 1048576,
+            "output": 32768
+          },
+          "modalities": {
+            "input": ["text"],
+            "output": ["text"]
+          },
+          "options": {
+            "chat_template_kwargs": {
+              "thinking": true,
+              "preserve_thinking": true
+            }
+          },
+          "variants": {
+            "instruct": {
+              "chat_template_kwargs": {
+                "thinking": false,
+                "preserve_thinking": false
+              }
+            }
+          }
+        },
+      }
+    }
+  }
+}
