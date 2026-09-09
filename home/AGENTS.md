@@ -13,5 +13,20 @@
 - Apply that same high standard to engineering excellence: lint, test failures, and test flakiness.
   If you see one, even if it is not caused by what you are working on right now, still get it fixed.
 - Before using "dynamic workflows", "ultra code" or any harness feature that immediately spawns a large swarm of subagents, always explain the tradeoffs and ask the user for explicit approval.
-- When you don't know something or need current information, use the brave-search tools. Use the playwright browser tools only when you need to click, fill forms, or interact with a page.
-- When you need to search docs, use `context7` tools.
+- When you need to inspect or understand any image (screenshots, PNGs, design mockups, character art, etc.), ALWAYS delegate to the `vision` subagent - never read the image file directly. The subagent's description is returned with the image, so you do not need to open it yourself.
+
+# Project Memory
+
+- At the start of each session, read MEMORY.md if it exists in the current project scope — it holds accumulated project context.
+- Never treat memory as authoritative if the current source code contradicts it.
+
+Before starting a non-trivial task:
+- Search project memory for relevant previous decisions, bugs, and implementation patterns.
+- Prefer existing project decisions over inventing new approaches.
+
+After completing a non-trivial task:
+- Save important architectural decisions.
+- Save non-obvious bugs and their fixes.
+- Save project-specific conventions discovered during implementation.
+- Do not save trivial facts or temporary debugging information.
+
