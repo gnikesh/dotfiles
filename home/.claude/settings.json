@@ -1,0 +1,66 @@
+{
+  "$schema": "https://json.schemastore.org/claude-code-settings.json",
+  "env": {
+    "CLAUDE_CODE_USE_BEDROCK": "1",
+    "AWS_REGION": "us-east-1",
+    "ANTHROPIC_BEDROCK_REGION_PREFIX": "global",
+    "ANTHROPIC_DEFAULT_FABLE_MODEL": "global.anthropic.claude-fable-5-1",
+    "ANTHROPIC_DEFAULT_OPUS_MODEL": "global.anthropic.claude-opus-5",
+    "ANTHROPIC_DEFAULT_HAIKU_MODEL": "global.anthropic.claude-haiku-4-5-20251001-v1:0"
+  },
+  "model": "global.anthropic.claude-fable-5-1",
+  "modelOverrides": {
+    "claude-fable-5-1": "global.anthropic.claude-fable-5-1",
+    "claude-fable-5": "global.anthropic.claude-fable-5",
+    "claude-opus-5": "global.anthropic.claude-opus-5",
+    "claude-opus-4-8": "global.anthropic.claude-opus-4-8",
+    "claude-haiku-4-5-20251001": "global.anthropic.claude-haiku-4-5-20251001-v1:0"
+  },
+  "availableModels": [
+    "claude-fable-5-1",
+    "claude-fable-5",
+    "claude-opus-5",
+    "claude-opus-4-8",
+    "claude-haiku-4-5",
+    "global.anthropic.claude-fable-5-1",
+    "global.anthropic.claude-fable-5",
+    "global.anthropic.claude-opus-5",
+    "global.anthropic.claude-opus-4-8",
+    "global.anthropic.claude-haiku-4-5-20251001-v1:0"
+  ],
+  "attribution": {
+    "commit": "",
+    "pr": "",
+    "sessionUrl": false
+  },
+  "preferredNotifChannel": "terminal_bell",
+  "statusLine": {
+    "type": "command",
+    "command": "bash ~/.dotfiles/home/.claude/statusline.sh",
+    "padding": 0
+  },
+  "hooks": {
+    "Notification": [
+      {
+        "matcher": "permission_prompt|idle_prompt|agent_needs_input",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "sh ~/.dotfiles/home/.claude/hooks/notify.sh"
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "sh ~/.dotfiles/home/.claude/hooks/notify.sh"
+          }
+        ]
+      }
+    ]
+  }
+}
