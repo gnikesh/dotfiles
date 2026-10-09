@@ -1,238 +1,250 @@
 {
   "$schema": "https://opencode.ai/config.json",
-  "instructions": ["clusters/nrp.md"],
   "lsp": true,
+  "model": "NRP/qwen3",
+  "default_agent": "build",
+
+  // Subagent prompts and permissions live in ./agents/*.md.
+  // Model assignments are kept here so they can be changed in one place.
   "agents": {
-      "coordinator": {
-        "mode": "primary",
-        "model": "NRP/deepseek-v4-flash",
-        "sub_agents": ["researcher", "builder"],
-        "toolsets": [
-          { "type": "background_agents" }
-        ]
-      },
-      "code-reviewer": {
-        "description": "Reviews code for best practices and potential issues",
-        "mode": "subagent",
-        "model": "anthropic/claude-sonnet-4-20250514",
-        "prompt": "You are a code reviewer. Focus on security, performance, and maintainability.",
-        "permission": {
-          "edit": "deny"
-        }
-      }
+    "plan": {
+      // Plan stays read-only, so it may only launch subagents that cannot edit.
+      "permissions": [
+        { "action": "subagent", "resource": "*", "effect": "deny" },
+        { "action": "subagent", "resource": "explore", "effect": "allow" },
+        { "action": "subagent", "resource": "researcher", "effect": "allow" },
+        { "action": "subagent", "resource": "architect", "effect": "allow" },
+        { "action": "subagent", "resource": "code-reviewer", "effect": "allow" },
+        { "action": "subagent", "resource": "security-auditor", "effect": "allow" },
+        { "action": "subagent", "resource": "vision", "effect": "allow" }
+      ]
+    },
+
+    // Deep reasoning
+    "architect": { "model": "amazon-bedrock/claude-opus-5-5" },
+    "debugger": { "model": "amazon-bedrock/claude-opus-5-5" },
+    "code-reviewer": { "model": "amazon-bedrock/claude-opus-5-5" },
+    "security-auditor": { "model": "amazon-bedrock/claude-opus-5-5" },
+
+    // Hands-on (text-only)
+    "implementer": { "model": "NRP/glm-5" },
+    "tester": { "model": "NRP/glm-5" },
+    "perf-profiler": { "model": "NRP/glm-5" },
+
+    // Hands-on (needs image input for screenshots)
+    "ui-verifier": { "model": "NRP/qwen3" },
+    "apple-platform": { "model": "NRP/qwen3" },
+    "general": { "model": "NRP/qwen3" },
+
+    // Fast
+    "explore": { "model": "NRP/deepseek-v4-flash" },
+    "researcher": { "model": "NRP/deepseek-v4-flash" },
+    "docs-writer": { "model": "NRP/deepseek-v4-flash" },
+
+    // Vision
+    "vision": { "model": "NRP/qwen3-small" }
   },
+
   "mcp": {
-    "git": {
-      "type": "local",
-      "command": "uvx",
-      "args": [
-        "mcp-server-git",
-        "--repository",
-        "/home/gnikesh/projects/video-gen-pilot/"
-      ],
-      "enabled": true
-    },
-    "brave-search": {
-      "type": "local",
-      "command": [
-        "npx",
-        "-y",
-        "@brave/brave-search-mcp-server"
-      ],
-      "environment": {
-        "BRAVE_API_KEY": "{env:BRAVE_API_KEY}"
+    "servers": {
+      "appwrite": {
+        "type": "remote",
+        "url": "https://mcp.appwrite.io"
       },
-      "enabled": true
-    },
-    "context7": {
-      "type": "remote",
-      "url": "https://mcp.context7.com/mcp"
-    },
-    "zotero": {
-      "type": "local",
-      "command": ["/home/gnikesh/.local/bin/zotero-mcp"],
-      "environment": {
-        "ZOTERO_API_KEY": "{env:ZOTERO_API_KEY}",
-        "ZOTERO_LIBRARY_ID": "{env:ZOTERO_LIBRARY_ID}",
-        "ZOTERO_LIBRARY_TYPE": "user"
+      "xcode-tools": {
+        "type": "local",
+        "command": ["xcrun", "mcpbridge"]
       },
-      "enabled": false
-    },
-    "playwright": {
-      "type": "local",
-      "command": ["npx", "-y", "@playwright/mcp@latest"],
-      "enabled": true
-    },
-    "kubernetes": {
-      "type": "local",
-      "command": ["npx", "-y", "kubernetes-mcp-server@latest", "--kubeconfig", "/home/gnikesh/.kube/config"],
-      "enabled": false
-    },
-    "sequential-thinking": {
-      "type": "local",
-      "command": ["npx", "-y", "@modelcontextprotocol/server-sequential-thinking"],
-      "enabled": false
+      "Roblox_Studio": {
+        "type": "local",
+        "command": ["/Applications/RobloxStudio.app/Contents/MacOS/StudioMCP"]
+      },
+      "memory": {
+        "type": "local",
+        "command": ["npx", "-y", "agentsmd-memory"],
+        "environment": {
+          "MEMORY_FILE": "MEMORY.md"
+        }
+      },
+      "searxng": {
+        "type": "local",
+        "command": ["npx", "-y", "mcp-searxng"],
+        "environment": {
+          "SEARXNG_URL": "http://localhost:9100"
+        },
+        "disabled": true
+      },
+      "brave-search": {
+        "type": "local",
+        "command": ["npx", "-y", "@brave/brave-search-mcp-server"],
+        "environment": {
+          "BRAVE_API_KEY": "{env:BRAVE_API_KEY}"
+        }
+      },
+      "tavily": {
+        "type": "local",
+        "command": ["npx", "-y", "tavily-mcp@latest"],
+        "environment": {
+          "TAVILY_API_KEY": "{env:TAVILY_API_KEY}"
+        }
+      },
+      "context7": {
+        "type": "remote",
+        "url": "https://mcp.context7.com/mcp"
+      },
+      "zotero": {
+        "type": "local",
+        "command": ["/Users/gnikesh/.local/bin/zotero-mcp"],
+        "environment": {
+          "ZOTERO_API_KEY": "{env:ZOTERO_API_KEY}",
+          "ZOTERO_LIBRARY_ID": "{env:ZOTERO_LIBRARY_ID}",
+          "ZOTERO_LIBRARY_TYPE": "user"
+        },
+        "disabled": true
+      },
+      "playwright": {
+        "type": "local",
+        "command": ["npx", "-y", "@playwright/mcp@0.0.79", "--browser", "chromium", "--headless", "--caps=vision,devtools"]
+      },
+      "kubernetes": {
+        "type": "local",
+        "command": ["npx", "-y", "kubernetes-mcp-server@latest", "--kubeconfig", "/Users/gnikesh/.kube/config"],
+        "disabled": true
+      },
+      "sequential-thinking": {
+        "type": "local",
+        "command": ["npx", "-y", "@modelcontextprotocol/server-sequential-thinking"]
+      },
+      "docx": {
+        "type": "local",
+        "command": ["uvx", "--with", "mcp<2", "--from", "docx-mcp-server", "docx-mcp-server"],
+        "disabled": true
+      },
+      "excel": {
+        "type": "local",
+        "command": ["uvx", "excel-mcp-server", "stdio"],
+        "disabled": true
+      }
     }
   },
-  "provider": {
+
+  "providers": {
     "NRP": {
-      "npm": "@ai-sdk/openai-compatible",
       "name": "NRP",
-      "options": {
+      "package": "aisdk:@ai-sdk/openai-compatible",
+      "settings": {
         "baseURL": "https://ellm.nrp-nautilus.io/v1",
         "apiKey": "{env:NAUTILUS_API_KEY}"
       },
+      // Model and variant request fields such as chat_template_kwargs and
+      // reasoning_effort must go under "body"; under "settings" they are silently dropped.
+      // Reasoning controls follow https://nrp.ai/documentation/userdocs/ai/llm-managed/models/
+      // Models without "body" use the server default. "instruct" turns thinking off.
+      // "variants": [] stops OpenCode from adding generic low/medium/high variants
+      // to a model that has no reasoning control.
       "models": {
         "qwen3": {
           "name": "qwen3",
-          "limit": {
-            "context": 1010000,
-            "output": 32768
-          },
-          "modalities": {
-            "input": ["text", "image", "video"],
-            "output": ["text"]
-          },
-          "options": {
-            "chat_template_kwargs": {
-              "thinking": true,
-              "preserve_thinking": true
-            }
-          },
-          "variants": {
-            "instruct": {
-              "chat_template_kwargs": {
-                "thinking": false,
-                "preserve_thinking": false
-              }
-            }
-          }
+          "capabilities": { "tools": true, "input": ["text", "image", "video"], "output": ["text"] },
+          "limit": { "context": 1000000, "output": 65536 },
+          // Default effort is xhigh.
+          "variants": [
+            { "id": "low", "body": { "reasoning_effort": "low" } },
+            { "id": "medium", "body": { "reasoning_effort": "medium" } },
+            { "id": "xhigh", "body": { "reasoning_effort": "xhigh" } },
+            { "id": "instruct", "body": { "chat_template_kwargs": { "enable_thinking": false } } }
+          ]
+        },
+        "qwen3-small": {
+          "name": "qwen3-small",
+          "capabilities": { "tools": true, "input": ["text", "image", "video"], "output": ["text"] },
+          "limit": { "context": 1000000, "output": 65536 },
+          // Default effort is xhigh.
+          "variants": [
+            { "id": "low", "body": { "reasoning_effort": "low" } },
+            { "id": "medium", "body": { "reasoning_effort": "medium" } },
+            { "id": "xhigh", "body": { "reasoning_effort": "xhigh" } },
+            { "id": "instruct", "body": { "chat_template_kwargs": { "enable_thinking": false } } }
+          ]
         },
         "gpt-oss": {
           "name": "gpt-oss",
-          "limit": {
-            "context": 131072,
-            "output": 32768
-          },
-          "modalities": {
-            "input": ["text"],
-            "output": ["text"]
-          },
-          "options": {
-            "chat_template_kwargs": {
-              "thinking": true,
-              "preserve_thinking": true
-            }
-          },
-          "variants": {
-            "instruct": {
-              "chat_template_kwargs": {
-                "thinking": false,
-                "preserve_thinking": false
-              }
-            }
-          }
+          "capabilities": { "tools": true, "input": ["text"], "output": ["text"] },
+          "limit": { "context": 131072, "output": 32768 },
+          // Default effort is medium. Thinking cannot be turned off.
+          "variants": [
+            { "id": "low", "body": { "reasoning_effort": "low" } },
+            { "id": "medium", "body": { "reasoning_effort": "medium" } },
+            { "id": "high", "body": { "reasoning_effort": "high" } }
+          ]
         },
         "gemma": {
           "name": "gemma",
-          "limit": {
-            "context": 262144,
-            "output": 32768
-          },
-          "modalities": {
-            "input": ["text", "image", "video"],
-            "output": ["text"]
-          },
-          "options": {
-            "chat_template_kwargs": {
-              "thinking": true,
-              "preserve_thinking": true
-            }
-          },
-          "variants": {
-            "instruct": {
-              "chat_template_kwargs": {
-                "thinking": false,
-                "preserve_thinking": false
-              }
-            }
-          }
+          "capabilities": { "tools": true, "input": ["text", "image", "video"], "output": ["text"] },
+          "limit": { "context": 262144, "output": 32768 },
+          // Thinking is on by default and has no effort levels.
+          "variants": [
+            { "id": "instruct", "body": { "chat_template_kwargs": { "enable_thinking": false } } }
+          ]
         },
         "kimi": {
           "name": "kimi",
-          "limit": {
-            "context": 131072,
-            "output": 32768
-          },
-          "modalities": {
-            "input": ["text", "image", "video"],
-            "output": ["text"]
-          },
-          "options": {
-            "chat_template_kwargs": {
-              "thinking": true,
-              "preserve_thinking": true
-            }
-          },
-          "variants": {
-            "instruct": {
-              "chat_template_kwargs": {
-                "thinking": false,
-                "preserve_thinking": false
-              }
-            }
-          }
+          "capabilities": { "tools": true, "input": ["text", "image", "video"], "output": ["text"] },
+          "limit": { "context": 131072, "output": 32768 },
+          // Reasoning is built in and has no controls.
+          "variants": []
         },
         "glm-5": {
           "name": "glm-5",
-          "limit": {
-            "context": 300000,
-            "output": 32768
-          },
-          "modalities": {
-            "input": ["text"],
-            "output": ["text"]
-          },
-          "options": {
-            "chat_template_kwargs": {
-              "thinking": true,
-              "preserve_thinking": true
-            }
-          },
-          "variants": {
-            "instruct": {
-              "chat_template_kwargs": {
-                "thinking": false,
-                "preserve_thinking": false
-              }
-            }
-          }
+          "capabilities": { "tools": true, "input": ["text"], "output": ["text"] },
+          "limit": { "context": 1048576, "output": 65536 },
+          // Default effort is max. Thinking is always on.
+          "variants": [
+            { "id": "low", "body": { "chat_template_kwargs": { "reasoning_effort": "low" } } },
+            { "id": "high", "body": { "chat_template_kwargs": { "reasoning_effort": "high" } } },
+            { "id": "max", "body": { "chat_template_kwargs": { "reasoning_effort": "max" } } }
+          ]
         },
         "deepseek-v4-flash": {
           "name": "deepseek-v4-flash",
-          "limit": {
-            "context": 1048576,
-            "output": 32768
-          },
-          "modalities": {
-            "input": ["text"],
-            "output": ["text"]
-          },
-          "options": {
-            "chat_template_kwargs": {
-              "thinking": true,
-              "preserve_thinking": true
-            }
-          },
-          "variants": {
-            "instruct": {
-              "chat_template_kwargs": {
-                "thinking": false,
-                "preserve_thinking": false
-              }
-            }
-          }
+          "capabilities": { "tools": true, "input": ["text", "image"], "output": ["text"] },
+          "limit": { "context": 1048576, "output": 65536 },
+          // Default effort is max.
+          "variants": [
+            { "id": "low", "body": { "chat_template_kwargs": { "reasoning_effort": "low" } } },
+            { "id": "high", "body": { "chat_template_kwargs": { "reasoning_effort": "high" } } },
+            { "id": "max", "body": { "chat_template_kwargs": { "reasoning_effort": "max" } } },
+            { "id": "instruct", "body": { "chat_template_kwargs": { "thinking": false } } }
+          ]
+        }
+      }
+    },
+    "amazon-bedrock": {
+      "name": "Amazon Bedrock",
+      "settings": {
+        "region": "us-east-1",
+        "apiKey": "{env:AWS_BEARER_TOKEN_BEDROCK}"
+      },
+      "models": {
+        "claude-opus-5-5": { "name": "Claude Opus 5.5", "modelID": "us.anthropic.claude-opus-5-5" },
+        "claude-opus-5": { "name": "Claude Opus 5", "modelID": "us.anthropic.claude-opus-5" },
+        "claude-fable-5-1": { "name": "Claude Fable 5.1", "modelID": "us.anthropic.claude-fable-5-1" },
+        "claude-fable-5": { "name": "Claude Fable 5", "modelID": "us.anthropic.claude-fable-5" },
+        "claude-opus-4-8": { "name": "Claude Opus 4.8", "modelID": "us.anthropic.claude-opus-4-8" },
+        "gpt-6-astra": { "name": "GPT-6 Astra", "modelID": "us.openai.gpt-6-astra" },
+        "gpt-6.1-sol": {
+          "name": "GPT-6.1 Sol",
+          "modelID": "us.openai.gpt-6.1-sol",
+          "variants": [
+            { "id": "low", "settings": { "reasoningEffort": "low" } },
+            { "id": "medium", "settings": { "reasoningEffort": "medium" } },
+            { "id": "high", "settings": { "reasoningEffort": "high" } },
+            { "id": "xhigh", "settings": { "reasoningEffort": "xhigh" } },
+            { "id": "max", "settings": { "reasoningEffort": "max" } }
+          ]
         },
+        "gpt-6-luna": { "name": "GPT-6 Luna", "modelID": "us.openai.gpt-6-luna" },
+        "claude-haiku-4-5": { "name": "Claude Haiku 4.5", "modelID": "us.anthropic.claude-haiku-4-5-20251001-v1:0" }
       }
     }
   }

@@ -122,6 +122,14 @@ in
     config.lib.file.mkOutOfStoreSymlink "${dotfiles}/home/AGENTS.md";
   home.file.".codex/AGENTS.md".source =
     config.lib.file.mkOutOfStoreSymlink "${dotfiles}/home/AGENTS.md";
-  home.file.".config/opencode/AGENTS.md".source =
-    config.lib.file.mkOutOfStoreSymlink "${dotfiles}/home/AGENTS.md";
+
+  # OpenCode gets the shared instructions plus its own subagent delegation rules.
+  # This is a generated file, so edits to either source need a rebuild.
+  home.file.".config/opencode/AGENTS.md".text =
+    builtins.readFile ./home/AGENTS.md
+    + builtins.readFile ./home/.config/opencode/AGENTS.opencode.md;
+  home.file.".config/opencode/opencode.jsonc".source =
+    config.lib.file.mkOutOfStoreSymlink "${dotfiles}/home/.config/opencode/opencode.jsonc";
+  home.file.".config/opencode/agents".source =
+    config.lib.file.mkOutOfStoreSymlink "${dotfiles}/home/.config/opencode/agents";
 }
