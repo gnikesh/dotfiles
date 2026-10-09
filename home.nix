@@ -132,4 +132,7 @@ in
     config.lib.file.mkOutOfStoreSymlink "${dotfiles}/home/.config/opencode/opencode.jsonc";
   home.file.".config/opencode/agents".source =
     config.lib.file.mkOutOfStoreSymlink "${dotfiles}/home/.config/opencode/agents";
+  # Auto-discovered plugins. session-model/ is TUI-only (tui.tsx, no server entrypoint).
+  home.file.".config/opencode/plugins".source =
+    config.lib.file.mkOutOfStoreSymlink "${dotfiles}/home/.config/opencode/plugins";
 }
