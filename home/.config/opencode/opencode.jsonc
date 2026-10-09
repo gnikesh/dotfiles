@@ -22,14 +22,14 @@
 
     // Deep reasoning
     "architect": { "model": "amazon-bedrock/claude-opus-5-5" },
-    "debugger": { "model": "amazon-bedrock/claude-opus-5-5" },
-    "code-reviewer": { "model": "amazon-bedrock/claude-opus-5-5" },
-    "security-auditor": { "model": "amazon-bedrock/claude-opus-5-5" },
+    "debugger": { "model": "amazon-bedrock/claude-sonnet-5-5" },
+    "code-reviewer": { "model": "NRP/glm-5" },
+    "security-auditor": { "model": "NRP/qwen3" },
 
     // Hands-on (text-only)
-    "implementer": { "model": "NRP/glm-5" },
-    "tester": { "model": "NRP/glm-5" },
-    "perf-profiler": { "model": "NRP/glm-5" },
+    "implementer": { "model": "NRP/qwen3" },
+    "tester": { "model": "NRP/qwen3" },
+    "perf-profiler": { "model": "NRP/qwen3" },
 
     // Hands-on (needs image input for screenshots)
     "ui-verifier": { "model": "NRP/qwen3" },
@@ -227,10 +227,9 @@
       },
       "models": {
         "claude-opus-5-5": { "name": "Claude Opus 5.5", "modelID": "us.anthropic.claude-opus-5-5" },
-        "claude-opus-5": { "name": "Claude Opus 5", "modelID": "us.anthropic.claude-opus-5" },
         "claude-fable-5-1": { "name": "Claude Fable 5.1", "modelID": "us.anthropic.claude-fable-5-1" },
         "claude-fable-5": { "name": "Claude Fable 5", "modelID": "us.anthropic.claude-fable-5" },
-        "claude-opus-4-8": { "name": "Claude Opus 4.8", "modelID": "us.anthropic.claude-opus-4-8" },
+        "claude-sonnet-5-5": { "name": "Claude Sonnet 5.5", "modelID": "us.anthropic.claude-sonnet-5-5" },
         "gpt-6-astra": { "name": "GPT-6 Astra", "modelID": "us.openai.gpt-6-astra" },
         "gpt-6.1-sol": {
           "name": "GPT-6.1 Sol",
