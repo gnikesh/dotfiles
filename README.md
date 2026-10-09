@@ -7,7 +7,7 @@ The same `rebuild.sh` command works on both platforms:
 - macOS uses `nix-darwin` and Home Manager.
 - Linux uses standalone Home Manager.
 - Linux automatically selects `x86_64` or `aarch64` from the machine architecture.
-- iTerm2 is installed and configured only on macOS.
+- WezTerm is installed only on macOS.
 - Linux uses the terminal provided by the SSH client or local desktop.
 
 `flake.lock` is committed intentionally. It pins Nixpkgs, Home Manager, nix-darwin, Oh My Bash, and the other inputs so different machines get the same versions.
@@ -25,8 +25,8 @@ The same `rebuild.sh` command works on both platforms:
 
 - macOS defaults through `nix-darwin`.
 - Homebrew and the `herdr` formula.
-- iTerm2 and Claude Code casks.
-- iTerm2 dynamic profile and macOS iTerm2 preferences.
+- WezTerm and OpenSuperWhisper casks, and the WezTerm configuration.
+- Claude Code through its official installer, on both platforms, when it is not already installed.
 - Zsh with Oh My Zsh, the `agnoster` theme, autosuggestions, and syntax highlighting.
 - Hack Nerd Font for the agnoster prompt.
 
@@ -118,13 +118,13 @@ ln -sfn "$PWD" "$HOME/.dotfiles"
 sudo nix run nix-darwin/nix-darwin-26.05#darwin-rebuild -- switch --flake "$HOME/.dotfiles#mac"
 ```
 
-This first switch installs the configured Homebrew packages and casks, creates the Home Manager files, installs the Hack Nerd Font, and configures iTerm2.
+This first switch installs the configured Homebrew packages and casks, creates the Home Manager files, installs the Hack Nerd Font, and installs Claude Code.
 
 After the first successful switch, use `./rebuild.sh` for all future changes.
 
 ## Fresh Linux installation
 
-These instructions are intended for a Linux server accessed over SSH. iTerm2 is not installed on the server. Your local terminal remains responsible for rendering fonts and colors.
+These instructions are intended for a Linux server accessed over SSH. WezTerm is not installed on the server. Your local terminal remains responsible for rendering fonts and colors.
 
 ### 1. Install basic tools
 
@@ -243,7 +243,7 @@ The appropriate file is sourced after the managed shell configuration. It is saf
 
 The following aliases are configured but depend on commands that may come from outside this repository:
 
-- `cc` runs `claude --dangerously-skip-permissions`. On macOS, the Claude Code cask installs this command.
+- `cc` runs `claude --dangerously-skip-permissions`. Activation runs the official installer (`curl -fsSL https://claude.ai/install.sh | bash`) when `~/.local/bin/claude` is missing, and Claude Code updates itself after that.
 - `co` runs `codex --full-auto`. Install Codex separately if you want to use this alias.
 - The `herdr` command is installed through Homebrew on macOS. Linux receives its configuration file, but this repository does not install a Linux Herdr binary.
 
@@ -334,7 +334,7 @@ Update `user` in `flake.nix`. The current configuration assumes `/Users/<usernam
 
 ### Homebrew removes an installed package
 
-macOS Homebrew cleanup is set to `zap`, so Homebrew removes formulae and casks that are not listed in `configuration.nix`. Add anything that should remain managed to that file, then run `./rebuild.sh`.
+macOS Homebrew cleanup is set to `zap`, so Homebrew removes formulae and casks that are not listed in `configuration.nix`, including each removed cask's settings and data. Add anything that should remain managed to that file, then run `./rebuild.sh`.
 
 ## Repository layout
 
@@ -345,6 +345,6 @@ configuration.nix                 macOS system and Homebrew configuration
 home.nix                          Shared and platform-specific Home Manager settings
 rebuild.sh                        Cross-platform rebuild entry point
 home/.config/nvim/                Shared Neovim configuration
-home/.config/iterm2/              macOS iTerm2 dynamic profile
+home/.config/wezterm/             macOS WezTerm configuration, linked to ~/.wezterm.lua
 home/.config/herdr/               Herdr configuration
 ```

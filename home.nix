@@ -35,6 +35,8 @@ in
     EDITOR = "nvim";
     EZA_COLORS = "di=34:fi=37:ex=32:ln=36";
   };
+  # The Claude Code installer puts its launcher here.
+  home.sessionPath = [ "$HOME/.local/bin" ];
 
   home.shellAliases = commonAliases;
 
@@ -88,25 +90,21 @@ in
     config.lib.file.mkOutOfStoreSymlink "${dotfiles}/home/.config/nvim";
   home.file.".config/herdr".source =
     config.lib.file.mkOutOfStoreSymlink "${dotfiles}/home/.config/herdr";
+  home.file.".wezterm.lua" = lib.mkIf isDarwin {
+    source = config.lib.file.mkOutOfStoreSymlink "${dotfiles}/home/.config/wezterm/.wezterm.lua";
+  };
   home.file.".claude/settings.json".source =
     config.lib.file.mkOutOfStoreSymlink "${dotfiles}/home/.claude/settings.json";
 
-  # iTerm2 is a macOS-only application. Linux uses the host terminal instead.
-  home.file."Library/Application Support/iTerm2/DynamicProfiles/dotfiles.json" = lib.mkIf isDarwin {
-    source = config.lib.file.mkOutOfStoreSymlink "${dotfiles}/home/.config/iterm2/dotfiles.json";
-  };
-
-  # These are iTerm2's global appearance settings, so they cannot live in a
-  # dynamic profile. Keep them managed alongside the profile.
-  home.activation.iterm2Preferences = lib.mkIf isDarwin (lib.hm.dag.entryAfter [ "writeBoundary" ] ''
-    if [ -x /usr/bin/defaults ]; then
-      /usr/bin/defaults write com.googlecode.iterm2 "Default Bookmark Guid" -string "2F91B29D-6B5B-4A31-9E73-4C6FC9F0F8EF"
-      /usr/bin/defaults write com.googlecode.iterm2 HideTab -bool true
-      /usr/bin/defaults write com.googlecode.iterm2 DimBackgroundWindows -bool true
-      /usr/bin/defaults write com.googlecode.iterm2 DimOnlyText -bool false
-      /usr/bin/defaults write com.googlecode.iterm2 SplitPaneDimmingAmount -float 0.55
+  # Claude Code uses its official installer and keeps itself updated, so only
+  # install it when it is missing.
+  home.activation.claudeCode = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+    if [ ! -x "$HOME/.local/bin/claude" ]; then
+      export PATH="${lib.makeBinPath [ pkgs.curl pkgs.bash pkgs.coreutils pkgs.gnugrep pkgs.gnused ]}:$PATH"
+      run bash -c 'curl -fsSL https://claude.ai/install.sh | bash' \
+        || echo "warning: Claude Code install failed; run: curl -fsSL https://claude.ai/install.sh | bash" >&2
     fi
-  '');
+  '';
 
   # Keep Pi's credential and runtime state local by linking only authored files and directories.
   home.file.".pi/agent/themes".source =

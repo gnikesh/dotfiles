@@ -34,9 +34,10 @@
     brews = [
       "herdr"
     ];
+    # Claude Code is installed by its own installer from home.nix, not Homebrew.
     casks = [
-      "iterm2"
-      "claude-code"
+      "wezterm"
+      "opensuperwhisper"
     ];
   };
 }
