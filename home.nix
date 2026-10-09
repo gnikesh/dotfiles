@@ -29,6 +29,8 @@ in
     jq        # json on the command line
     lazygit
     eza
+    nodejs    # node/npx for the npx-based MCP servers
+    uv        # uvx for the uvx-based MCP servers
   ] ++ lib.optional isDarwin pkgs.nerd-fonts.hack;
   fonts.fontconfig.enable = lib.mkIf isDarwin true;
   home.sessionVariables = {
