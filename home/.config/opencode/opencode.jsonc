@@ -208,7 +208,10 @@
         "apiKey": "{env:AWS_BEARER_TOKEN_BEDROCK}"
       },
       "models": {
-        "claude-opus-5-5": { "name": "Claude Opus 5.5", "modelID": "us.anthropic.claude-opus-5-5" },
+        // The us. cross-region profile for Opus 5.5 is broken server-side at
+        // Bedrock (fails every call with "Bedrock is unable to process your
+        // request"); the global. profile works. Re-check us. before changing back.
+        "claude-opus-5-5": { "name": "Claude Opus 5.5", "modelID": "global.anthropic.claude-opus-5-5" },
         "claude-fable-5-1": { "name": "Claude Fable 5.1", "modelID": "us.anthropic.claude-fable-5-1" },
         "claude-fable-5": { "name": "Claude Fable 5", "modelID": "us.anthropic.claude-fable-5" },
         "claude-sonnet-5-5": { "name": "Claude Sonnet 5.5", "modelID": "us.anthropic.claude-sonnet-5-5" },
