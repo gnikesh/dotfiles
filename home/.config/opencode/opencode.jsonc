@@ -24,7 +24,7 @@
     "architect": { "model": "amazon-bedrock/claude-opus-5-5" },
     "debugger": { "model": "amazon-bedrock/claude-sonnet-5-5" },
     "code-reviewer": { "model": "NRP/glm-5" },
-    "security-auditor": { "model": "NRP/qwen3" },
+    "security-auditor": { "model": "NRP/glm-5" },
 
     // Hands-on (text-only)
     "implementer": { "model": "NRP/qwen3" },
