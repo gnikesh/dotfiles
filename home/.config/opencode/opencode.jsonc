@@ -28,8 +28,8 @@
 
     // Hands-on (text-only)
     "implementer": { "model": "NRP/qwen3" },
-    "tester": { "model": "NRP/qwen3" },
-    "perf-profiler": { "model": "NRP/qwen3" },
+    "tester": { "model": "NRP/glm-5" },
+    "perf-profiler": { "model": "NRP/glm-5" },
 
     // Hands-on (needs image input for screenshots)
     "ui-verifier": { "model": "NRP/qwen3" },
