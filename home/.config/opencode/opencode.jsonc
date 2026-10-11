@@ -42,7 +42,7 @@
     "docs-writer": { "model": "NRP/deepseek-v4-flash" },
 
     // Vision
-    "vision": { "model": "NRP/qwen3-small" }
+    "vision": { "model": "NRP/qwen3" }
   },
 
   "mcp": {
